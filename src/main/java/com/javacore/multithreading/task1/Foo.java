@@ -1,17 +1,33 @@
 package main.java.com.javacore.multithreading.task1;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class Foo {
 
-    CountDownLatch cd1 = new CountDownLatch(1);
-    CountDownLatch cd2 = new CountDownLatch(1);
-    CountDownLatch cd3 = new CountDownLatch(1);
+    private final CountDownLatch cd = new CountDownLatch(2);
+    private final int timeout = 10;
 
-
-    public void first() { print("first"); }
-    public void second() { print("second"); }
-    public void third() { print("third"); }
+    public void first() {
+        print("first");
+        cd.countDown();
+    }
+    public void second() {
+        try {
+            cd.await(timeout, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        print("second");
+        cd.countDown();
+    }
+    public void third() {
+        try {
+            cd.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        print("third"); }
 
 
     void print(String value) {

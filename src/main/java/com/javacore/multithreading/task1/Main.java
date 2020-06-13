@@ -13,10 +13,8 @@ public class Main {
 
     private void execute() {
         Foo foo = new Foo();
-        CountDownLatch cd = new CountDownLatch(1);
-        CountDownLatch cd2 = new CountDownLatch(1);
-        List<Thread> threads = Arrays.asList(new Thread(new FirstThread(foo, cd)),
-            new Thread(new SecondThread(foo, cd, cd2)), new Thread(new ThirdThread(foo, cd2)));
+        List<Thread> threads = Arrays.asList(new Thread(new FirstThread(foo)),
+            new Thread(new SecondThread(foo)), new Thread(new ThirdThread(foo)));
         Collections.shuffle(threads);
 
         threads.forEach(Thread::start);
