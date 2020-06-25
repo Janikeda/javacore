@@ -2,11 +2,10 @@ package main.java.com.javacore.io_nio.task3.repository.impl;
 
 import static main.java.com.javacore.io_nio.task3.utils.Constants.DELIMITER;
 import static main.java.com.javacore.io_nio.task3.utils.DbUtils.calculateCurrentId;
+import static main.java.com.javacore.io_nio.task3.utils.DbUtils.findAllLines;
 import static main.java.com.javacore.io_nio.task3.utils.DbUtils.findLineById;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -67,8 +66,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public List<Account> findByDeveloper(List<Integer> devIds) throws IOException {
-        List<String> lines = Files.readAllLines(pathToDb, StandardCharsets.UTF_8);
-        List<Account> accounts = lines.stream().map(this::parseDbRow)
+        List<Account> accounts = findAllLines(pathToDb).stream().map(this::parseDbRow)
             .collect(Collectors.toList());
 
         return accounts.stream().filter(account -> devIds.contains(account.getDevId()))
@@ -85,6 +83,9 @@ public class AccountRepositoryImpl implements AccountRepository {
         return deleteByIdCommon(ids, pathToDb);
     }
 
+    /*
+     * Метод-парсер. Из записи в БД в java объект
+     * */
     private Account parseDbRow(String row) {
         if (row == null) {
             return null;

@@ -59,6 +59,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
         return deleteByIdCommon(ids, pathToDb);
     }
 
+    /*
+     * Метод-парсер. Из записи в БД в java объект
+     * */
     private Project parseDbRow(String row) {
         if (row == null) {
             return null;
@@ -70,24 +73,4 @@ public class ProjectRepositoryImpl implements ProjectRepository {
         return project;
     }
 
-//    public Project edit(Project entity) throws IOException {
-//        String lineForEdit = findLineById(entity.getId(), pathToDb)
-//            .orElseThrow(() -> new RuntimeException(notFoundExMes(entity.getId())));
-//        lineForEdit = lineForEdit.replaceAll(extractText(line), newText);
-//
-//        try (BufferedWriter bw = Files.newBufferedWriter(pathToDb)) {
-//            bw.write(lineForEdit);
-//            bw.flush();
-//            bw.newLine();
-//        }
-//        return entity;
-//    }
-
-//    private long getCurrentId() {
-//        long numOfLines;
-//        try (Stream<String> lines = Files.lines(path, Charset.defaultCharset())) {
-//            numOfLines  = lines.count();
-//        }
-//        return numOfLines;
-//    }
 }

@@ -18,6 +18,14 @@ public final class ConsoleUtils {
         }
     }
 
+    public static void processDeleteRequest(String result) {
+        if (result.equals("OK")) {
+            System.out.println("Данная операция выполнена успешно");
+        } else {
+            System.out.println(result);
+        }
+    }
+
     public static String printDeleteMessage(int projects, int devs, int accs) {
         return "Удалено проектов: " + projects + ", удалено разработчиков: " + devs +
             ", удалено счетов: " + accs;

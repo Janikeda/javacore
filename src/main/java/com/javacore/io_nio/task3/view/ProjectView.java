@@ -2,25 +2,22 @@ package main.java.com.javacore.io_nio.task3.view;
 
 import static main.java.com.javacore.io_nio.task3.utils.ConsoleUtils.parseStringForId;
 import static main.java.com.javacore.io_nio.task3.utils.ConsoleUtils.printSuccessMessage;
+import static main.java.com.javacore.io_nio.task3.utils.ConsoleUtils.processDeleteRequest;
 import static main.java.com.javacore.io_nio.task3.view.OperationType.CREATE;
 import static main.java.com.javacore.io_nio.task3.view.OperationType.DELETE;
 import static main.java.com.javacore.io_nio.task3.view.OperationType.READ;
 import static main.java.com.javacore.io_nio.task3.view.OperationType.UPDATE;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 import main.java.com.javacore.io_nio.task3.controller.ProjectController;
-import main.java.com.javacore.io_nio.task3.controller.dto.AccountDto;
-import main.java.com.javacore.io_nio.task3.controller.dto.DeveloperDto;
+import main.java.com.javacore.io_nio.task3.controller.dto.BaseDto;
 import main.java.com.javacore.io_nio.task3.controller.dto.ProjectDto;
-import main.java.com.javacore.io_nio.task3.model.ProjectStatus;
 
-public class ProjectView {
+public class ProjectView extends CommonView {
 
     private final ProjectController projectController;
-
 
     ProjectView() {
         projectController = new ProjectController();
@@ -30,6 +27,11 @@ public class ProjectView {
         new ProjectView().projectViewExecutor();
     }
 
+    /*
+     * Операции с консолью: Создание, получение, редактирование и удаление данных
+     * Разработчики и счета не могут быть без проекта, следовательно операция создания одинаковая во всех View
+     * Операции чтения и удаления без указания ID сущности будут применены ко всем записям.    *
+     * */
     private void projectViewExecutor() {
         OperationType operationType;
         boolean isTerminated = false;
@@ -56,7 +58,7 @@ public class ProjectView {
                 } else if (operationType.equals(DELETE)) {
                     System.out.println("Введите ID проекта или удалите все записи");
                     Integer id = parseStringForId(scanner.nextLine());
-                    printSuccessMessage(delete(id));
+                    delete(id);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -70,52 +72,27 @@ public class ProjectView {
     }
 
 
-    private boolean read(Integer id) throws IOException {
-        return projectController.read(id);
+    private void read(Integer id) throws IOException {
+        List<? extends BaseDto> dtos = projectController.read(id);
+        System.out.println(dtos);
     }
 
     private boolean create(ProjectDto projectDto) throws IOException {
-        return projectController.save(projectDto);
+        boolean result = projectController.create(projectDto);
+        read(null);
+        return result;
     }
 
-    private boolean delete(Integer id) throws IOException {
-        return projectController.delete(id);
+    private void delete(Integer id) throws IOException {
+        String result = projectController.delete(id);
+        read(null);
+        processDeleteRequest(result);
     }
 
     private boolean update(ProjectDto projectDto) throws IOException {
-        return projectController.update(projectDto);
-    }
-
-    private ProjectDto createProjectDto(Scanner scanner, OperationType operationType) {
-        ProjectDto projectDto = new ProjectDto();
-        ProjectStatus projectStatus;
-        Set<DeveloperDto> developers = new HashSet<>();
-        System.out.println("Выберите статус проекта: " + String
-            .join(", ", ProjectStatus.getAllStatus()));
-        projectStatus = ProjectStatus.valueOf(scanner.nextLine());
-        if (operationType.equals(UPDATE)) {
-            System.out.println("Выберите ID проекта для апдейта");
-            Integer id = parseStringForId(scanner.nextLine());
-            projectDto.setId(id);
-        } else {
-            System.out.println("Создание разработчиков и их счетов");
-            String continueChoice;
-            do {
-                DeveloperDto developerDto = new DeveloperDto();
-                AccountDto accountDto = new AccountDto();
-                System.out.println("Выберите DATA для счета:");
-                accountDto.setData(scanner.nextLine());
-                developerDto.setAccount(accountDto);
-                developers.add(developerDto);
-                System.out.print("Продолжить добавление разработчиков? Y/N: ");
-                continueChoice = scanner.nextLine();
-            } while (continueChoice.equalsIgnoreCase("Y"));
-        }
-
-        projectDto.setDevelopers(developers);
-        projectDto.setProjectStatus(projectStatus);
-
-        return projectDto;
+        boolean result = projectController.update(projectDto);
+        read(null);
+        return result;
     }
 
 }

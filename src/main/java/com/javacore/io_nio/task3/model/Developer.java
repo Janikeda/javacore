@@ -2,6 +2,9 @@ package main.java.com.javacore.io_nio.task3.model;
 
 public class Developer extends BaseEntity {
 
+    /*
+     * ID проекта
+     * */
     private Integer projectId;
     private Account account;
 

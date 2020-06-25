@@ -7,6 +7,9 @@ import main.java.com.javacore.io_nio.task3.model.Account;
 import main.java.com.javacore.io_nio.task3.model.Developer;
 import main.java.com.javacore.io_nio.task3.model.Project;
 
+/*
+ * Класс маппер. Из сущности базы данных в дто
+ * */
 public final class EntityMapper {
 
     public static ProjectDto fromProjectEntityToDto(Project project) {
